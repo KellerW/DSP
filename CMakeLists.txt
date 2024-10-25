@@ -1,14 +1,8 @@
 cmake_minimum_required(VERSION 3.29)
-
 project(dsp)
 
-set(TEST_EXECUTABLE
-    dsp_test
-)
-set(ELF ${PROJECT_NAME}.elf)
-
 enable_language(ASM)
-
+set(ELF ${PROJECT_NAME}.elf)
 set(STARTUP_FILE "src/startup_stm32f103xb.c")
 
 if(ARM_CROSS)
@@ -127,23 +121,20 @@ add_subdirectory(src)
 message(STATUS "Linker flags: ${CMAKE_EXE_LINKER_FLAGS}")
 message(STATUS "Compiler flags: ${CMAKE_C_FLAGS}")
 
+# Add Unit Test setup for host compilation
 if(NOT ARM_CROSS)
     # Set Unit Test
-    # -----------------------------------------------------
     include(CTest)
-    # Add the source files and headers
     add_subdirectory(Unity)
-    #add_library(unity STATIC IMPORTED)
     set_target_properties(unity PROPERTIES IMPORTED_LOCATION /home/wagner/work/dsp/Unity/build/libunity.a)
+
     # Enable testing
     enable_testing()
-    add_test(NAME UnitTests COMMAND UnitTests)
-    #Add unit test target
-    add_executable(
-        UnitTests
-        tests/test_main.c
-    )
+    add_executable(UnitTests tests/test_main.c)
     target_link_libraries(UnitTests PRIVATE unity ${LIBRARY_BIT_UTILS})
+
+    # Register Unit Tests
+    add_test(NAME UnitTests COMMAND UnitTests)
 endif()
 
 #install(TARGETS ${PROJECT_NAME} DESTINATION ${CMAKE_INSTALL_BINDIR})
