@@ -5,7 +5,6 @@ project(dsp)
 set(TEST_EXECUTABLE
     dsp_test
 )
-
 set(ELF ${PROJECT_NAME}.elf)
 
 enable_language(ASM)
@@ -71,14 +70,16 @@ if(NOT ARM_CROSS)
 add_executable(${PROJECT_NAME} 
     src/main.c
 )
-target_link_libraries(${PROJECT_NAME} ${LIBRARY_STRINGS} ${LIBRARY_BIT_UTILS} ${LIBRARY_SERIAL_INTERFACE})
+target_link_libraries(${PROJECT_NAME} ${LIBRARY_STRINGS} ${LIBRARY_BIT_UTILS} ${LIBRARY_SERIAL_INTERFACE}
+)
 else()
 add_executable(${ELF} ${STARTUP_FILE}
   src/main.c
 )
-target_link_libraries(${ELF} ${LIBRARY_STRINGS} ${LIBRARY_BIT_UTILS} ${LIBRARY_SERIAL_INTERFACE})
+target_link_libraries(${ELF} ${LIBRARY_STRINGS} ${LIBRARY_BIT_UTILS} ${LIBRARY_SERIAL_INTERFACE}
+)
 endif()
-
+if(ARM_CROSS)
 target_compile_options(${ELF} PUBLIC
   -Wall 
   -g 
@@ -98,7 +99,7 @@ target_compile_options(${ELF} PUBLIC
   -specs=nano.specs 
   -specs=nosys.specs
   )
-
+endif()
 # Add a custom target for Frama-C analysis
 add_custom_target(
     frama_c_analysis
@@ -114,11 +115,12 @@ add_custom_target(coverage
     DEPENDS UnitTests # Make sure tests are run before generating the report
 )
 
+if(ARM_CROSS)
 add_custom_command(TARGET ${ELF} POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} -O binary ${ELF} ${PROJECT_NAME}.bin
     COMMENT "Converting ${PROJECT_NAME} to binary format"
 )
-
+endif()
 add_subdirectory(src)
 #target_include_directories(${PROJECT_NAME} PRIVATE 
 #include ${DSP_INCLUDE_DIRS})

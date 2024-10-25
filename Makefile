@@ -1,6 +1,7 @@
 # Variables
 BUILD_DIR = build
-CMAKE_FLAGS = -DARM_CROSS=ON
+CROSS_COMPILE ?= OFF
+CMAKE_FLAGS = -DARM_CROSS=$(CROSS_COMPILE)
 
 # Default target
 all: clean_build cmake_build
@@ -27,3 +28,14 @@ clean:
 	@echo "Clean complete."
 
 .PHONY: all clean_build cmake_build clean
+
+# Usage instructions
+help:
+	@echo "Usage: make [TARGET] [CROSS_COMPILE=ON|OFF]"
+	@echo "Default CROSS_COMPILE is OFF"
+	@echo "Targets:"
+	@echo "  all           - Clean and build the project"
+	@echo "  clean         - Remove the build directory"
+	@echo "  clean_build   - Clean the build directory before building"
+	@echo "  cmake_build   - Run CMake and make to build the project"
+	@echo "  help          - Show this help message"
