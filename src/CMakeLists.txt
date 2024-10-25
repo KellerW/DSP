@@ -1,0 +1,3 @@
+add_subdirectory(strings)
+add_subdirectory(serial_interface)
+add_subdirectory(bit_utils)

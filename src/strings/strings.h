@@ -1,4 +1,4 @@
 #ifndef STRINGS_H
 #define STRINGS_H
-    extern const char HEllOWORLD[];
+    extern const char *HEllOWORLD;
 #endif
